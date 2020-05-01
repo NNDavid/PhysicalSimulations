@@ -2,6 +2,7 @@
 #define HARMONICOSCILLATOR_SOLVER_H
 
 #include "solver.h"
+#include "spring.h"
 
 namespace solver {
 
@@ -21,6 +22,7 @@ public:
 
 protected:
     sf::CircleShape body_;
+    Spring spring_;
     double mass_;
     double elastic_constant_;
     double amplitude_;

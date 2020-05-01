@@ -1,27 +1,20 @@
 #include "spring.h"
 #include <math.h>
-Spring::Spring(const sf::Vector2f& first_end,const sf::Vector2f& second_end,const int line_num):first_end_(first_end),second_end_(second_end)
+Spring::Spring(const sf::Vector2f& first_end,const sf::Vector2f& second_end,const double circle_radius,const int circle_num):circle_num_(circle_num),radius_(circle_radius),first_end_(first_end),second_end_(second_end)
 {
-    float line_length = 3.0;
-    rectangles_.resize(line_num);
-    rectangles_[0] = new sf::RectangleShape(sf::Vector2f(line_length/2.0,5.0));
-    rectangles_[0]->setPosition(first_end);
-    rectangles_[0]->setRotation(10.0f);
-    for(QVector<sf::RectangleShape*>::size_type i = 1;i<rectangles_.size() - 1;i++)
+    circles_.resize(circle_num_);
+    for(size_t i = 0; i< circles_.size();i++)
     {
-        rectangles_[i] = new sf::RectangleShape(sf::Vector2f(line_length,5.0));
-        rectangles_[i]->setPosition(rectangles_[i-1]->getPosition() + sf::Vector2f(cos(10.0) * line_length,sin(10.0) * 5.0));
-
-        if(i % 2 == 1) rectangles_[i]->setRotation(180 + 10.0f);
-        else rectangles_[i]->setRotation(10.0f);
-
+        circles_[i].setFillColor(sf::Color::Transparent);
+        circles_[i].setOutlineThickness(2);
+        circles_[i].setOutlineColor(sf::Color::Blue);
+        circles_[i].setRadius(radius_);
+        circles_[i].setOrigin(circles_[i].getRadius(),circles_[i].getRadius());
     }
-    rectangles_.back() = new sf::RectangleShape(sf::Vector2f(line_length/2.0,5.0));
-
 }
 Spring::~Spring()
 {
-    for(QVector<sf::RectangleShape*>::size_type i = 0;i<rectangles_.size();i++) delete rectangles_[i];
+    circles_.clear();
 }
 sf::Vector2f Spring::getFirst_end() const {return first_end_;}
 sf::Vector2f Spring::getSecond_end() const {return second_end_;}
@@ -30,7 +23,32 @@ void Spring::setPosition(const sf::Vector2f& first_end,const sf::Vector2f& secon
     first_end_ = first_end;
     second_end_ = second_end;
 }
-void Spring::draw(sf::RenderWindow& window) const
+void Spring::draw(sf::RenderWindow* window,const sf::Vector2f& first_end,const sf::Vector2f& second_end)
 {
-    for(QVector<sf::RectangleShape*>::size_type i = 0;i<rectangles_.size();i++) window.draw(*rectangles_[i]);
+    setPosition(first_end,second_end);
+    sf::Vector2f dist = (second_end_ - first_end_) / float(circle_num_);
+    sf::Vector2f position = first_end_;
+
+    for(std::vector<sf::CircleShape>::iterator it = circles_.begin();it != circles_.end();it++)
+    {
+       it->setPosition(position);
+       window->draw(*it);
+       position += dist;
+    }
+
+
+
+}
+void Spring::setRadius(const double radius)
+{
+    radius_ = radius;
+    for(std::vector<sf::CircleShape>::iterator it = circles_.begin();it != circles_.end();it++)
+    {
+        it->setRadius(radius);
+        it->setOrigin(it->getRadius(),it->getRadius());
+    }
+}
+double Spring::getRadius() const
+{
+    return radius_;
 }

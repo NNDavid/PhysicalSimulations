@@ -7,6 +7,7 @@ namespace solver {
 
 HarmonicOscillator_Solver::HarmonicOscillator_Solver(sf::RenderWindow* window,const double mass,const double elastic_constant, const double amplitude):
     Solver(window),
+    spring_(sf::Vector2f(0,0),sf::Vector2f(0,0),10,50),
     mass_(mass),
     elastic_constant_(elastic_constant),
     amplitude_(amplitude)
@@ -48,7 +49,7 @@ void HarmonicOscillator_ExactSolver::draw()
     //float v_exact = circular_frequency_ * amplitude_ * std::sin(circular_frequency_ * told_.asSeconds()) / 4.0;
     //float a_exact = -circular_frequency_ * circular_frequency_ * amplitude_ * sin(circular_frequency_ * told_.asSeconds()) / 4.0;
     body_.setPosition(window_->getSize().x / 2.0, window_->getSize().y / 2.0 + x_exact);
-    std::cout << x_exact << " " << told_.asSeconds() <<" "<< body_.getPosition().x<<" " << body_.getPosition().y<<std::endl;
+    spring_.draw(window_,sf::Vector2f(window_->getSize().x / 2.0,spring_.getRadius()),sf::Vector2f(window_->getSize().x / 2.0,window_->getSize().y / 2.0 + x_exact));
     window_->draw(body_);
 }
 
