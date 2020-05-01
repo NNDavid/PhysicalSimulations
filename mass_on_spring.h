@@ -10,6 +10,8 @@
 #include <QLabel>
 #include <QRadioButton>
 #include "qsfml_massonspring.h"
+#include <QCheckBox>
+#include <QPushButton>
 namespace massonspring {
 
 
@@ -18,10 +20,17 @@ class Mass_On_Spring : public QWidget
     Q_OBJECT
 public:
     explicit Mass_On_Spring(QWidget *parent = nullptr);
+    void closeEvent(QCloseEvent*) override;
+
+signals:
+    void widgetClosed();
+
 
 private slots:
-    void simulationRestarted();
-
+    void startSimulation();
+    void restartSimulation();
+    void DiffEqSolverChanged();
+    void drawChanged();
 private:
     QVBoxLayout* mainLayout_;
     QHBoxLayout* commandLayout_;
@@ -36,10 +45,28 @@ private:
     QLabel* springConstantLabel_;
     QLabel* NmLabel_;
 
+    QDoubleSpinBox* thetaSpinBox_;
+    QLabel* thetaLabel_;
+    QLabel* piLabel_;
+
+    QDoubleSpinBox* lSpinBox_;
+    QLabel* lLabel_;
+    QLabel* mLabel_;
+
+
+    QDoubleSpinBox* xSpinBox_;
+    QLabel* xLabel_;
+    QLabel* mLabel2_;
+
+
     QGridLayout* solverSwapLayout_;
-    QRadioButton* exactSolver_;
-    QRadioButton* eulerSolver_;
-    QRadioButton* compareEulerSolver_;
+    QRadioButton* modifiedEulerSolver_;
+
+    QCheckBox* trajectory_;
+
+    QPushButton* startSimulation_;
+    QPushButton* restartSimulation_;
+
     QSFML_MassOnSpring* canvas_;
 
 

@@ -2,11 +2,10 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
 namespace massonspring{
-QSFML_MassOnSpring::QSFML_MassOnSpring(QWidget* parent, const QPoint& position, const QSize& size):QSFML_Canvas(parent,position,size),diff_(EULER){}
+QSFML_MassOnSpring::QSFML_MassOnSpring(QWidget* parent, const QPoint& position, const QSize& size):QSFML_Canvas(parent,position,size),diff_(solver::MODIFIED_EULER),pause_(true){}
 void QSFML_MassOnSpring::onInit()
 {
-    solver_ = new EulerSolver(this);
-    emit simulationRestarted();
+    solver_ = new solver::MassOnSpring_ModifiedEulerSolver(this);
 }
 void QSFML_MassOnSpring::onUpdate()
 {
@@ -18,25 +17,49 @@ void QSFML_MassOnSpring::onUpdate()
           sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
           sf::RenderWindow::setView(sf::View(visibleArea));
         }
-        else if(event.type == sf::Event::MouseButtonReleased)
-        {
-            if(solver_->getSolverType() != diff_)
-            {
-                delete solver_;
-                switch(diff_)
-                {
-                   case RK4: solver_ = new RK4_Solver(this);break;
-                case EULER: solver_ = new EulerSolver(this);break;
-                }
-            }
-            emit simulationRestarted();
-            solver_->restartSimulation(event);
-        }
    }
-    // Draw new frame
-   sf::RenderWindow::clear(sf::Color(100, 100, 110));
+      sf::RenderWindow::clear(sf::Color::Black);
+   if(!pause_)
+   {
+    // Draw new fram
    solver_->draw();
+   }
+}
+
+void QSFML_MassOnSpring::restartSimulation()
+{
+    solver_->restartSimulation();
+}
+
+void QSFML_MassOnSpring::setDiffEqSolver(const solver::DiffEqSolver diff)
+{
+    diff_ = diff;
+}
+void QSFML_MassOnSpring::startSimulation(const double mass, const double elastic_constant, const double theta_initial,const double l,const double x)
+{
+    pause_ = true;
+
+    if(solver_->getSolverType() != diff_)
+    {
+        delete solver_;
+        if(diff_ == solver::MODIFIED_EULER) solver_ = new solver::MassOnSpring_ModifiedEulerSolver(this);
+    }
+
+    solver_->setParameters(mass,elastic_constant,theta_initial,l,x);
+    solver_->restartSimulation();
+    pause_ = false;
+}
+void QSFML_MassOnSpring::changeDraw(const bool is_checked)
+{
+    if(pause_) solver_->setDrawer(is_checked ? draw::Trajectory : draw::Simulation);
+    else
+    {
+        pause_ = true;
+        solver_->setDrawer(is_checked ? draw::Trajectory : draw::Simulation);
+        pause_ = false;
+    }
 }
 }
+
 
 

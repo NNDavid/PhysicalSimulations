@@ -24,6 +24,7 @@ SOURCES += \
     main.cpp \
     mainmenu.cpp \
     mass_on_spring.cpp \
+    massonspring_solver.cpp \
     oscillating_support_pendulum.cpp \
     oscillatingsupportpendulum_solver.cpp \
     qsfml_doublependulum.cpp \
@@ -43,6 +44,7 @@ HEADERS += \
     harmonicoscillator_solver.h \
     mainmenu.h \
     mass_on_spring.h \
+    massonspring_solver.h \
     oscillating_support_pendulum.h \
     oscillatingsupportpendulum_solver.h \
     qsfml_doublependulum.h \

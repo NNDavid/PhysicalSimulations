@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 namespace solver {
-enum DiffEqSolver{EXACT,EULER,IMPLICIT_EULER,RK4};
+enum DiffEqSolver{EXACT,EULER,IMPLICIT_EULER,MODIFIED_EULER,RK4};
     class Solver
     {
     public:
