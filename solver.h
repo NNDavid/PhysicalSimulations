@@ -2,6 +2,7 @@
 #define SOLVER_H
 
 #include <SFML/Graphics.hpp>
+#include "simulationdata.h"
 
 namespace solver {
 enum DiffEqSolver{EXACT,EULER,IMPLICIT_EULER,MODIFIED_EULER,RK4};

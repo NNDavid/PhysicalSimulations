@@ -4,6 +4,7 @@
 #include "drawer.h"
 #include <queue>
 #include <SFML/Graphics.hpp>
+#include "simulationdata.h"
 namespace draw {
 class DoublePendulum_Drawer:public Drawer
 {
@@ -73,6 +74,7 @@ public:
     void setDrawer(const draw::DrawType draw);
 
 protected:
+    simdata::SimulationData* data_;
     draw::DoublePendulum_Drawer* drawer_;
     double mass1_;
     double length1_;

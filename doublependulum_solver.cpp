@@ -110,8 +110,17 @@ void DoublePendulum_TrajectoryDrawer::reset(const double length1,const double le
 namespace solver {
 
 //abstract
-DoublePendulum_Solver::DoublePendulum_Solver(sf::RenderWindow* window):Solver(window),drawer_(new draw::DoublePendulum_SimulationDrawer(window)){}
-DoublePendulum_Solver::~DoublePendulum_Solver(){delete drawer_;}
+DoublePendulum_Solver::DoublePendulum_Solver(sf::RenderWindow* window):Solver(window),data_(new simdata::SimulationData(3,3)),drawer_(new draw::DoublePendulum_SimulationDrawer(window))
+{
+    data_->setLabelText("First body",0,0);
+    data_->setLabelText("Second body",0,1);
+    data_->show();
+}
+DoublePendulum_Solver::~DoublePendulum_Solver(){
+    delete drawer_;
+    data_->close();
+    delete data_;
+}
 void DoublePendulum_Solver::setParameters(const double mass1,const double length1,const double mass2,const double length2,const double theta1,const double theta2)
 {
     mass1_ = mass1;
@@ -166,6 +175,12 @@ void DoublePendulum_ImplicitEulerSolver::draw()
     theta2vel_ +=dt * Theta2Acc(theta1_,theta2_,theta1vel_,theta2vel_);
 
     drawer_->draw(theta1_,theta2_);
+
+    data_->setLabelText("Θ = " + QString::number(theta1_ / M_PI,'f',3) + " π",1,0);
+    data_->setLabelText("Θ = " + QString::number(theta2_ / M_PI,'f',3) + " π",1,1);
+
+    data_->setLabelText("Θ velocity = " + QString::number(theta1vel_ / M_PI,'f',3) + " π / s",2,0);
+    data_->setLabelText("Θ velocity = " + QString::number(theta2vel_ / M_PI,'f',3) + " π / s",2,1);
 
     told_ = time_now;
 }
@@ -252,6 +267,12 @@ void DoublePendulum_RK4Solver::draw()
     theta2vel_ = theta2vel_tmp +  dt * (k12 + 2.0 * k22 + 2.0 * k32 + k42) / 6.0;
 
     drawer_->draw(theta1_,theta2_);
+    data_->setLabelText("Θ = " + QString::number(theta1_ / M_PI,'f',3) + " π",1,0);
+    data_->setLabelText("Θ = " + QString::number(theta2_ / M_PI,'f',3) + " π",1,1);
+
+    data_->setLabelText("Θ velocity = " + QString::number(theta1vel_ / M_PI,'f',3) + " π",2,0);
+    data_->setLabelText("Θ velocity = " + QString::number(theta2vel_ / M_PI,'f',3) + " π / s",2,1);
+
     told_ = time_now;
 
 }

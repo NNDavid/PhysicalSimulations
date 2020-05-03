@@ -51,8 +51,8 @@ void QSFML_HarmonicOscillation::startSimulation(const double mass, const double 
         delete solver_;
         switch (diff_)
         {
-            case solver::EXACT: solver_ = new solver::HarmonicOscillator_ExactSolver(this,mass,elastic_constant,amplitude);break;
-            case solver::EULER: solver_ = new solver::HarmonicOscillator_EulerSolver(this,mass,elastic_constant,amplitude);break;
+            case solver::EXACT: solver_ = new solver::HarmonicOscillator_ExactSolver(this);break;
+            case solver::EULER: solver_ = new solver::HarmonicOscillator_EulerSolver(this);break;
         }
 
     }

@@ -5,5 +5,6 @@ namespace solver {
 
     Solver::Solver(sf::RenderWindow* window):
     window_(window) {}
-    Solver::~Solver() {}
+    Solver::~Solver() {
+    }
 }

@@ -3,6 +3,7 @@
 #include "solver.h"
 #include "drawer.h"
 #include "spring.h"
+#include "simulationdata.h"
 #include <queue>
 #include <math.h>
 
@@ -64,6 +65,7 @@ public:
     void setDrawer(const draw::DrawType draw);
 
     protected:
+    simdata::SimulationData* data_;
     draw::MassOnSpring_Drawer* drawer_;
     double mass_;
     double elastic_constant_;

@@ -3,17 +3,14 @@
 
 #include "solver.h"
 #include "spring.h"
+#include "simulationdata.h"
 
 namespace solver {
-
-const double MASS_DEFAULT = 50.0;
-const double ELASTIC_CONSTANT_DEFAULT = 50.0;
-const double AMPLITUDE_DEFAULT = 5.0;
 
 class HarmonicOscillator_Solver:public Solver
 {
 public:
-    HarmonicOscillator_Solver(sf::RenderWindow* window,const double mass = MASS_DEFAULT, const double elatsic_constant = ELASTIC_CONSTANT_DEFAULT, const double amplitude = AMPLITUDE_DEFAULT);
+    HarmonicOscillator_Solver(sf::RenderWindow* window);
     virtual ~HarmonicOscillator_Solver();
     virtual void draw() override = 0;
     virtual void restartSimulation() override = 0;
@@ -21,6 +18,7 @@ public:
     void setParameters(const double mass, const double elastic_constant,const double amplitude);
 
 protected:
+    simdata::SimulationData* data_;
     sf::CircleShape body_;
     Spring spring_;
     double mass_;
@@ -34,7 +32,7 @@ protected:
 class HarmonicOscillator_ExactSolver:public HarmonicOscillator_Solver
 {
 public:
-    HarmonicOscillator_ExactSolver(sf::RenderWindow* window,const double mass = MASS_DEFAULT, const double elatsic_constant = ELASTIC_CONSTANT_DEFAULT, const double amplitude = AMPLITUDE_DEFAULT);
+    HarmonicOscillator_ExactSolver(sf::RenderWindow* window);
     ~HarmonicOscillator_ExactSolver();
     void draw() override;
     void restartSimulation() override;
@@ -48,7 +46,7 @@ private:
 class HarmonicOscillator_EulerSolver:public HarmonicOscillator_Solver
 {
 public:
-    HarmonicOscillator_EulerSolver(sf::RenderWindow* window,const double mass = MASS_DEFAULT, const double elatsic_constant = ELASTIC_CONSTANT_DEFAULT, const double amplitude = AMPLITUDE_DEFAULT);
+    HarmonicOscillator_EulerSolver(sf::RenderWindow* window);
     ~HarmonicOscillator_EulerSolver();
     void draw() override;
     void restartSimulation() override;

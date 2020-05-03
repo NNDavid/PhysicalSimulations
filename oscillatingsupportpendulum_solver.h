@@ -2,6 +2,7 @@
 #define OSCILLATINGSUPPORTPENDULUM_SOLVER_H
 #include "solver.h"
 #include "drawer.h"
+#include "simulationdata.h"
 #include <deque>
 namespace draw{
 
@@ -56,16 +57,11 @@ namespace draw{
 }
 
 namespace solver {
-const double MASS = 50;
-const double LENGTH = 5;
-const double AMPLITUDE = 5;
-const double PERIOD = 5;
-const double THETA_INITIAL = 0;
 
 class OscillatingSupportPendulum_Solver:public Solver
 {
 public:
-    OscillatingSupportPendulum_Solver(sf::RenderWindow* window,const double length = LENGTH,const double amplitude = AMPLITUDE,const double period = PERIOD,const double theta_initial = THETA_INITIAL);
+    OscillatingSupportPendulum_Solver(sf::RenderWindow* window);
     virtual ~OscillatingSupportPendulum_Solver();
     virtual void draw() override = 0;
     virtual void restartSimulation() override = 0;
@@ -73,6 +69,7 @@ public:
     void setParameters(const double length,const double amplitude,const double period,const double theta_initial);
     void setDrawer(const draw::DrawType draw);
 protected:
+    simdata::SimulationData* data_;
     draw::OscillatingSupportPendulum_Drawer* drawer_;
     double length_;
     double amplitude_;
@@ -86,13 +83,14 @@ protected:
     double getSupportAcceleration(const double time);
     double getBodyAcceleration(const double theta,const double support_acceleration);
     double getBodyCanvasPosition(const double time);
+    double getSupportPosition(const double time);
 
 };
 
 class OscillatingSupportPendulum_ImplicitEulerSolver:public OscillatingSupportPendulum_Solver
 {
 public:
-   OscillatingSupportPendulum_ImplicitEulerSolver(sf::RenderWindow* window,const double length = LENGTH,const double amplitude = AMPLITUDE,const double period = PERIOD,const double theta_initial = THETA_INITIAL);
+   OscillatingSupportPendulum_ImplicitEulerSolver(sf::RenderWindow* window);
     virtual ~OscillatingSupportPendulum_ImplicitEulerSolver();
     void draw() override;
     void restartSimulation() override;

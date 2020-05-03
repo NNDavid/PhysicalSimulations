@@ -70,19 +70,14 @@ void OscillatingSupportPendulum_TrajectoryDrawer::reset()
 namespace solver{
 
 //abstract
-OscillatingSupportPendulum_Solver::OscillatingSupportPendulum_Solver(sf::RenderWindow* window,const double length,const double amplitude,const double period,const double theta_initial):
+OscillatingSupportPendulum_Solver::OscillatingSupportPendulum_Solver(sf::RenderWindow* window):
     Solver(window),
     drawer_(new draw::OscillatingSupportPendulum_SimulationDrawer(window)),
-    length_(length),
-    amplitude_(amplitude),
-    period_(period),
-    theta_initial_(theta_initial)
+    data_(new simdata::SimulationData(3,2))
 {
-
-
-
-
-
+    data_->setLabelText("Body data",0,0);
+    data_->setLabelText("Support position",0,1);
+    data_->show();
 }
 
 OscillatingSupportPendulum_Solver::~OscillatingSupportPendulum_Solver(){}
@@ -100,6 +95,12 @@ double OscillatingSupportPendulum_Solver::getSupportAcceleration(const double ti
 {
     return -amplitude_ * omega_ * omega_ * cos(omega_ * time);
 }
+
+double OscillatingSupportPendulum_Solver::getSupportPosition(const double time)
+{
+    return amplitude_ * cos(omega_ * time);
+}
+
 double OscillatingSupportPendulum_Solver::getBodyAcceleration(const double theta, const double support_acceleration)
 {
     return -(support_acceleration * cos(theta) + g * sin(theta)) / length_;
@@ -108,6 +109,8 @@ double OscillatingSupportPendulum_Solver::getBodyCanvasPosition(const double tim
 {
     return window_->getSize().x / 4.0 * cos(omega_ * time);
 }
+
+
 
 void OscillatingSupportPendulum_Solver::setDrawer(const draw::DrawType draw)
 {
@@ -124,8 +127,8 @@ void OscillatingSupportPendulum_Solver::setDrawer(const draw::DrawType draw)
 }
 
 //Implicit Euler
-OscillatingSupportPendulum_ImplicitEulerSolver::OscillatingSupportPendulum_ImplicitEulerSolver(sf::RenderWindow* window,const double length,const double amplitude,const double period,const double theta_initial):
-    OscillatingSupportPendulum_Solver(window,length,amplitude,period,theta_initial){}
+OscillatingSupportPendulum_ImplicitEulerSolver::OscillatingSupportPendulum_ImplicitEulerSolver(sf::RenderWindow* window):
+    OscillatingSupportPendulum_Solver(window){}
 
 OscillatingSupportPendulum_ImplicitEulerSolver::~OscillatingSupportPendulum_ImplicitEulerSolver(){}
 void OscillatingSupportPendulum_ImplicitEulerSolver::restartSimulation()
@@ -150,6 +153,11 @@ void OscillatingSupportPendulum_ImplicitEulerSolver::draw()
    thetavel_ += dt * getBodyAcceleration(theta_,getSupportAcceleration(time_now.asSeconds() + dt));
 
    drawer_->draw(getBodyCanvasPosition(time_now.asSeconds()),theta_);
+
+   data_->setLabelText("Θ = " + QString::number(theta_ / M_PI,'f',3) + " π",1,0);
+   data_->setLabelText("Θ velocity = " + QString::number(thetavel_ / M_PI,'f',3) + " π / s",2,0);
+
+   data_->setLabelText("x = " + QString::number(getSupportPosition(time_now.asSeconds())) + " m",1,1);
    told_ = time_now;
 }
 DiffEqSolver OscillatingSupportPendulum_ImplicitEulerSolver::getSolverType() const {return IMPLICIT_EULER;}

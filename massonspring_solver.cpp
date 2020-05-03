@@ -56,8 +56,15 @@ namespace solver {
 
 //Abstract
 
-MassOnSpring_Solver::MassOnSpring_Solver(sf::RenderWindow* window):Solver(window),drawer_(new draw::MassOnSpring_SimulationDrawer(window)){}
-MassOnSpring_Solver::~MassOnSpring_Solver(){}
+MassOnSpring_Solver::MassOnSpring_Solver(sf::RenderWindow* window):Solver(window),data_(new simdata::SimulationData(3,1)),drawer_(new draw::MassOnSpring_SimulationDrawer(window))
+{
+    data_->setLabelText("Body data",0,0);
+    data_->show();
+}
+MassOnSpring_Solver::~MassOnSpring_Solver()
+{
+    delete data_;
+}
 
 void MassOnSpring_Solver::setParameters(const double mass, const double elastic_constant, const double theta_initial,const double l,const double x)
 {
@@ -134,6 +141,9 @@ void  MassOnSpring_ModifiedEulerSolver::draw()
         x_ += dt * xvel_tmp / 2.0;
 
         drawer_->draw(theta_,x_,l_);
+
+        data_->setLabelText("Θ  = " + QString::number(theta_ / M_PI,'f',3) + " π",1,0);
+        data_->setLabelText("Θ velocity = " + QString::number(thetavel_ / M_PI,'f',3) + " π / s",2,0);
 
         told_ = time_now;
 }
