@@ -50,6 +50,7 @@ void MainMenu::simulationCalled()
          case 2:
         {
             massonspring::Mass_On_Spring* sim = new massonspring::Mass_On_Spring();
+           connect(sim,SIGNAL(widgetClosed()),this,SLOT(widgetClosed()));
            sim->show();
             break;
         }

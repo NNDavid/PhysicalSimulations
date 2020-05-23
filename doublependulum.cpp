@@ -28,14 +28,14 @@ DoublePendulum::DoublePendulum(QWidget *parent) :
     theta2Label_(new QLabel(this)),
     pi2Label_(new QLabel(this)),
     startSimulation_(new QPushButton(this)),
-    restartSimulation_(new QPushButton(this)),
+    stopSimulation_(new QPushButton(this)),
     RK4_Solver(new QRadioButton(this)),
     ImplicitEuler_Solver(new QRadioButton(this)),
     trajectoryDraw_(new QCheckBox(this)),
     canvas_(new QSFML_DoublePendulum(this, QPoint(20, 20), QSize(360, 360)))
 {
     startSimulation_->setText("Start simulation");
-    restartSimulation_->setText("Restart simulation");
+    stopSimulation_->setText("Stop simulation");
     mass1SpinBox_->setRange(0.1,10.0);
     mass1SpinBox_->setSingleStep(0.5);
     mass1SpinBox_->setValue(5.0);
@@ -94,7 +94,7 @@ DoublePendulum::DoublePendulum(QWidget *parent) :
     connect(trajectoryDraw_,SIGNAL(clicked()),this,SLOT(drawChanged()));
 
     connect(startSimulation_,SIGNAL(clicked()),this,SLOT(startSimulation()));
-    connect(restartSimulation_,SIGNAL(clicked()),this,SLOT(restartSimulation()));
+    connect(stopSimulation_,SIGNAL(clicked()),this,SLOT(stopSimulation()));
 
     connect(RK4_Solver,SIGNAL(clicked()),this,SLOT(DiffEqSolverChanged()));
 
@@ -128,7 +128,7 @@ DoublePendulum::DoublePendulum(QWidget *parent) :
     solverSwapLayout_->addWidget(ImplicitEuler_Solver,1,0);
     solverSwapLayout_->addWidget(trajectoryDraw_,2,0);
     solverSwapLayout_->addWidget(startSimulation_,0,1);
-    solverSwapLayout_->addWidget(restartSimulation_,1,1);
+    solverSwapLayout_->addWidget(stopSimulation_,1,1);
 
     commandLayout_->addLayout(gridLayout_);
     commandLayout_->addLayout(solverSwapLayout_);
@@ -136,8 +136,8 @@ DoublePendulum::DoublePendulum(QWidget *parent) :
     mainLayout_->addLayout(commandLayout_);
     mainLayout_->addWidget(canvas_);
     setLayout(mainLayout_);
-
-
+    showMaximized();
+    setAttribute(Qt::WA_ShowWithoutActivating);
 
 
 }
@@ -159,11 +159,27 @@ void DoublePendulum::DiffEqSolverChanged()
 void DoublePendulum::startSimulation()
 {
    canvas_->startSimulation(mass1SpinBox_->value(),length1SpinBox_->value(),mass2SpinBox_->value(),length2SpinBox_->value(),theta1SpinBox_->value() * M_PI,theta2SpinBox_->value() * M_PI);
+   mass1SpinBox_->setEnabled(false);
+   mass2SpinBox_->setEnabled(false);
+   length1SpinBox_->setEnabled(false);
+   length2SpinBox_->setEnabled(false);
+   theta1SpinBox_->setEnabled(false);
+   theta2SpinBox_->setEnabled(false);
+   ImplicitEuler_Solver->setEnabled(false);
+   RK4_Solver->setEnabled(false);
 }
-void DoublePendulum::restartSimulation()
+void DoublePendulum::stopSimulation()
 {
 
-    canvas_->restartSimulation();
+    canvas_->stopSimulation();
+    mass1SpinBox_->setEnabled(true);
+    mass2SpinBox_->setEnabled(true);
+    length1SpinBox_->setEnabled(true);
+    length2SpinBox_->setEnabled(true);
+    theta1SpinBox_->setEnabled(true);
+    theta2SpinBox_->setEnabled(true);
+    ImplicitEuler_Solver->setEnabled(true);
+    RK4_Solver->setEnabled(true);
 }
 
 void DoublePendulum::drawChanged()

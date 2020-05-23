@@ -28,7 +28,7 @@ signals:
 
 private slots:
     void startSimulation();
-    void restartSimulation();
+    void stopSimulation();
     void DiffEqSolverChanged();
     void drawChanged();
 private:
@@ -65,7 +65,7 @@ private:
     QCheckBox* trajectory_;
 
     QPushButton* startSimulation_;
-    QPushButton* restartSimulation_;
+    QPushButton* stopSimulation_;
 
     QSFML_MassOnSpring* canvas_;
 

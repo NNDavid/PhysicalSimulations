@@ -32,17 +32,18 @@ void QSFML_OscillatingSupportPendulum::setDiffEqSolver(const solver::DiffEqSolve
     diff_ = diff;
 }
 
-void QSFML_OscillatingSupportPendulum::restartSimulation()
+void QSFML_OscillatingSupportPendulum::stopSimulation()
 {
-    sf::RenderWindow::clear(sf::Color::Black);
-    solver_->restartSimulation();
-    pause_ = false;
+    pause_ = true;
 }
+
 void QSFML_OscillatingSupportPendulum::startSimulation( const double length, const double amplitude,const double period,const double initialTheta)
 {
     pause_ = true;
     solver_ ->setParameters(length,amplitude,period,initialTheta);
-    restartSimulation();
+    sf::RenderWindow::clear(sf::Color::Black);
+    solver_->restartSimulation();
+    pause_ = false;
 }
 
 void QSFML_OscillatingSupportPendulum::changeDraw(const bool is_checked)

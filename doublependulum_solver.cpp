@@ -195,7 +195,7 @@ void DoublePendulum_ImplicitEulerSolver::restartSimulation()
     theta2vel_ = Theta2Acc(theta1_,theta2_,0,0);
 
     drawer_->reset(length1_,length2_);
-
+    data_->raise();
     clock_.restart();
 }
 DiffEqSolver DoublePendulum_ImplicitEulerSolver::getSolverType() const
@@ -221,7 +221,7 @@ void DoublePendulum_RK4Solver::restartSimulation()
     theta2vel_ = Theta2Acc(theta1_,theta2_,0,0);
 
     drawer_->reset(length1_,length2_);
-
+    data_->raise();
     clock_.restart();
 }
 

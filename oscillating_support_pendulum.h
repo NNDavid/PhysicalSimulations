@@ -23,7 +23,7 @@ signals:
     void widgetClosed();
 private slots:
     void startSimulation();
-    void restartSimulation();
+    void stopSimulation();
     void DiffEqSolverChanged();
     void drawChanged();
 
@@ -52,7 +52,7 @@ private:
     QRadioButton* implicitEulerSolver_;
 
     QPushButton* startSimulation_;
-    QPushButton* restartSimulation_;
+    QPushButton* stopSimulation_;
     QCheckBox* drawTrajectory_;
 
     QSFML_OscillatingSupportPendulum* canvas_;

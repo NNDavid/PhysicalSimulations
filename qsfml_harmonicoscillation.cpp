@@ -31,7 +31,6 @@ void QSFML_HarmonicOscillation::onUpdate()
     {
     sf::RenderWindow::clear(sf::Color(150, 200, 110));
      solver_->draw();
-   //  std::cout<<"drawn"<<std::endl;
     }
 }
 
@@ -39,9 +38,9 @@ void QSFML_HarmonicOscillation::setDiffEqSolver(const solver::DiffEqSolver diff)
 {
     diff_ = diff;
 }
-void QSFML_HarmonicOscillation::restartSimulation()
+void QSFML_HarmonicOscillation::stopSimulation()
 {
-    solver_->restartSimulation();
+    pause_ = true;
 }
 void QSFML_HarmonicOscillation::startSimulation(const double mass, const double elastic_constant, const double amplitude)
 {
@@ -56,7 +55,7 @@ void QSFML_HarmonicOscillation::startSimulation(const double mass, const double 
         }
 
     }
-    else solver_->setParameters(mass,elastic_constant,amplitude);
+    solver_->setParameters(mass,elastic_constant,amplitude);
     solver_->restartSimulation();
     pause_ = false;
 }

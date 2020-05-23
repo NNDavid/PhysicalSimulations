@@ -6,7 +6,6 @@ Oscillating_Support_Pendulum::Oscillating_Support_Pendulum(QWidget *parent) : QW
 
 
        canvas_ = new QSFML_OscillatingSupportPendulum(this, QPoint(20, 20), QSize(360, 360));
-    //  connect(canvas_,SIGNAL(simulationRestarted()),this,SLOT(simulationRestarted()));
        implicitEulerSolver_ = new QRadioButton(this);
        implicitEulerSolver_ -> setText("Implicit Euler");
        implicitEulerSolver_ ->setChecked(true);
@@ -63,9 +62,9 @@ Oscillating_Support_Pendulum::Oscillating_Support_Pendulum(QWidget *parent) : QW
         startSimulation_ -> setText("Start simulation");
         connect(startSimulation_,SIGNAL(clicked()),this,SLOT(startSimulation()));
 
-        restartSimulation_ = new QPushButton(this);
-        restartSimulation_ -> setText("Restart simualtion");
-        connect(restartSimulation_,SIGNAL(clicked()),this,SLOT(restartSimulation()));
+        stopSimulation_ = new QPushButton(this);
+        stopSimulation_ -> setText("Stop simualtion");
+        connect(stopSimulation_,SIGNAL(clicked()),this,SLOT(stopSimulation()));
 
         drawTrajectory_ = new QCheckBox(this);
         drawTrajectory_->setText("Draw only trajectory");
@@ -77,7 +76,7 @@ Oscillating_Support_Pendulum::Oscillating_Support_Pendulum(QWidget *parent) : QW
         solverSwapLayout_ ->addWidget(implicitEulerSolver_,0,0);
 
         solverSwapLayout_ ->addWidget(startSimulation_,0,1);
-        solverSwapLayout_ ->addWidget(restartSimulation_,1,1);
+        solverSwapLayout_ ->addWidget(stopSimulation_,1,1);
         solverSwapLayout_ ->addWidget(drawTrajectory_,2,0);
 
         gridLayout_->addWidget(lengthLabel_,0,0);
@@ -106,24 +105,34 @@ Oscillating_Support_Pendulum::Oscillating_Support_Pendulum(QWidget *parent) : QW
 
         QWidget::setLayout(mainLayout_);
 
-
-        canvas_->show();
+        showMaximized();
+        setAttribute(Qt::WA_ShowWithoutActivating);
+                canvas_->show();
 }
-void Oscillating_Support_Pendulum::restartSimulation()
+void Oscillating_Support_Pendulum::stopSimulation()
 {
-    canvas_->restartSimulation();
+    canvas_->stopSimulation();
+    lengthSpinBox_->setEnabled(true);
+    amplitudeSpinBox_->setEnabled(true);
+    periodSpinBox_->setEnabled(true);
+    initialThetaSpinBox_->setEnabled(true);
+    implicitEulerSolver_->setEnabled(true);
 }
 
 void Oscillating_Support_Pendulum::startSimulation()
 {
     canvas_->startSimulation(lengthSpinBox_->value(),amplitudeSpinBox_->value(),periodSpinBox_->value(),initialThetaSpinBox_->value());
+    lengthSpinBox_->setEnabled(false);
+    amplitudeSpinBox_->setEnabled(false);
+    periodSpinBox_->setEnabled(false);
+    initialThetaSpinBox_->setEnabled(false);
+    implicitEulerSolver_->setEnabled(false);
 }
 
 void Oscillating_Support_Pendulum::DiffEqSolverChanged()
 {
     QObject* send = sender();
     if(send == implicitEulerSolver_) canvas_->setDiffEqSolver(solver::IMPLICIT_EULER);
-    //else if(send == eulerSolver_) canvas_->setDiffEqSolver(solver::EULER);
 }
 
 void Oscillating_Support_Pendulum::closeEvent(QCloseEvent*)
@@ -134,7 +143,5 @@ void Oscillating_Support_Pendulum::closeEvent(QCloseEvent*)
  void Oscillating_Support_Pendulum::drawChanged()
  {
      canvas_->changeDraw(drawTrajectory_->isChecked());
-
-
  }
 }// namespace oscillatingsupportpendulum

@@ -10,9 +10,9 @@ Harmonic_Oscillation::Harmonic_Oscillation(QWidget *parent) : QWidget(parent)
     startSimulation_->setText("Start simulation");
     connect(startSimulation_,SIGNAL(clicked()),this,SLOT(startSimulation()));
 
-    restartSimulation_ = new QPushButton(this);
-    restartSimulation_ ->setText("Restart simulation");
-    connect(restartSimulation_,SIGNAL(clicked()),this,SLOT(restartSimulation()));
+    stopSimulation_ = new QPushButton(this);
+    stopSimulation_ ->setText("Stop simulation");
+    connect(stopSimulation_,SIGNAL(clicked()),this,SLOT(stopSimulation()));
 
     mainLayout_ = new QVBoxLayout(this);
 
@@ -70,14 +70,11 @@ Harmonic_Oscillation::Harmonic_Oscillation(QWidget *parent) : QWidget(parent)
     eulerSolver_ = new QRadioButton("Euler diffeq solver");
     connect(eulerSolver_,SIGNAL(clicked()),this,SLOT(DiffEqSolverChanged()));
 
-    //compareEulerSolver_ = new QRadioButton("Compare Euler diffeq solver");
-   // connect(compareEulerSolver_,SIGNAL(clicked()),this,SLOT(DiffEqSolverChanged()));
-
 
     solverSwapLayout_->addWidget(exactSolver_,0,0);
     solverSwapLayout_->addWidget(eulerSolver_,1,0);
     solverSwapLayout_->addWidget(startSimulation_,0,1);
-    solverSwapLayout_->addWidget(restartSimulation_,1,1);
+    solverSwapLayout_->addWidget(stopSimulation_,1,1);
     //solverSwapLayout_->addWidget(compareEulerSolver_,2,0);
 
     canvas_ = new QSFML_HarmonicOscillation(this, QPoint(20, 20), QSize(360, 360));
@@ -100,20 +97,31 @@ Harmonic_Oscillation::Harmonic_Oscillation(QWidget *parent) : QWidget(parent)
     mainLayout_->addWidget(canvas_);
     QWidget::setLayout(mainLayout_);
 
-
     canvas_->show();
+    showMaximized();
+    setAttribute(Qt::WA_ShowWithoutActivating);
 }
 Harmonic_Oscillation::~Harmonic_Oscillation()
 {
 }
-void Harmonic_Oscillation::restartSimulation()
+void Harmonic_Oscillation::stopSimulation()
 {
-    canvas_->restartSimulation();
+    canvas_->stopSimulation();
+    massSpinBox_->setEnabled(true);
+    elasticConstantSpinBox_->setEnabled(true);
+    amplitudeSpinBox_->setEnabled(true);
+    exactSolver_->setEnabled(true);
+    eulerSolver_->setEnabled(true);
 }
 
 void Harmonic_Oscillation::startSimulation()
 {
     canvas_->startSimulation(massSpinBox_->value(),elasticConstantSpinBox_->value(),amplitudeSpinBox_->value());
+    massSpinBox_->setEnabled(false);
+    elasticConstantSpinBox_->setEnabled(false);
+    amplitudeSpinBox_->setEnabled(false);
+    exactSolver_->setEnabled(false);
+    eulerSolver_->setEnabled(false);
 }
 
 void Harmonic_Oscillation::DiffEqSolverChanged()

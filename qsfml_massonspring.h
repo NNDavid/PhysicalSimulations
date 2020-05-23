@@ -18,12 +18,9 @@ class QSFML_MassOnSpring:public QSFML_Canvas
 public:
     QSFML_MassOnSpring(QWidget* parent, const QPoint& position, const QSize& size);
     void setDiffEqSolver(const solver::DiffEqSolver diff);
-    void restartSimulation();
+    void stopSimulation();
     void startSimulation(const double mass, const double elastic_constant, const double theta_initial,const double l,const double x);
     void changeDraw(const bool is_checked);
-
- signals:
-    void simulationRestarted();
 
  private:
      void onInit() override;

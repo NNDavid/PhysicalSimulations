@@ -17,7 +17,7 @@ public:
     QSFML_OscillatingSupportPendulum(QWidget* parent, const QPoint& position, const QSize& size);
     ~QSFML_OscillatingSupportPendulum(){delete solver_;}
     void setDiffEqSolver(const solver::DiffEqSolver diff);
-    void restartSimulation();
+    void stopSimulation();
     void startSimulation( const double length, const double amplitude,const double period,const double initialTheta);
     void changeDraw(const bool is_checked);
  private:

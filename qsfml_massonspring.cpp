@@ -26,9 +26,9 @@ void QSFML_MassOnSpring::onUpdate()
    }
 }
 
-void QSFML_MassOnSpring::restartSimulation()
+void QSFML_MassOnSpring::stopSimulation()
 {
-    solver_->restartSimulation();
+    pause_ = true;
 }
 
 void QSFML_MassOnSpring::setDiffEqSolver(const solver::DiffEqSolver diff)

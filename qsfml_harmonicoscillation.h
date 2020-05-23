@@ -19,7 +19,7 @@ public:
    QSFML_HarmonicOscillation(QWidget* parent, const QPoint& position, const QSize& size);
    ~QSFML_HarmonicOscillation();
    void setDiffEqSolver(const solver::DiffEqSolver diff);
-   void restartSimulation();
+   void stopSimulation();
    void startSimulation(const double mass, const double elastic_constant, const double amplitude);
 
 private:

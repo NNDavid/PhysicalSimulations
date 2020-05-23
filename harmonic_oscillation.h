@@ -25,7 +25,7 @@ signals:
 
 private slots:
     void startSimulation();
-    void restartSimulation();
+    void stopSimulation();
     void DiffEqSolverChanged();
 
 private:
@@ -56,7 +56,7 @@ private:
     QRadioButton* eulerSolver_;
     QRadioButton* compareEulerSolver_;
     QPushButton* startSimulation_;
-    QPushButton* restartSimulation_;
+    QPushButton* stopSimulation_;
 
 
 

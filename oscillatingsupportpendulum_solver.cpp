@@ -139,6 +139,7 @@ void OscillatingSupportPendulum_ImplicitEulerSolver::restartSimulation()
     thetavel_ = 0;
     omega_ = 2.0 * M_PI / period_;
     drawer_->reset();
+    data_->raise();
     clock_.restart();
 }
 

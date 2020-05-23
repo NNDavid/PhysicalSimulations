@@ -26,7 +26,7 @@ Mass_On_Spring::Mass_On_Spring(QWidget *parent) :
     modifiedEulerSolver_(new QRadioButton(this)),
     trajectory_(new QCheckBox(this)),
     startSimulation_(new QPushButton(this)),
-    restartSimulation_(new QPushButton(this)),
+    stopSimulation_(new QPushButton(this)),
     canvas_(new QSFML_MassOnSpring(this, QPoint(20, 20), QSize(360, 360)))
 {
     massSpinBox_->setRange(0.1,50);
@@ -74,8 +74,8 @@ Mass_On_Spring::Mass_On_Spring(QWidget *parent) :
     startSimulation_->setText("Start simulation");
     connect(startSimulation_,SIGNAL(clicked()),this,SLOT(startSimulation()));
 
-    restartSimulation_->setText("Restart simulation");
-    connect(restartSimulation_,SIGNAL(clicked()),this,SLOT(restartSimulation()));
+    stopSimulation_->setText("Stop simulation");
+    connect(stopSimulation_,SIGNAL(clicked()),this,SLOT(stopSimulation()));
 
 
 
@@ -103,7 +103,7 @@ Mass_On_Spring::Mass_On_Spring(QWidget *parent) :
     solverSwapLayout_->addWidget(modifiedEulerSolver_,0,0);
     solverSwapLayout_->addWidget(trajectory_,1,0);
     solverSwapLayout_->addWidget(startSimulation_,0,1);
-    solverSwapLayout_->addWidget(restartSimulation_,1,1);
+    solverSwapLayout_->addWidget(stopSimulation_,1,1);
 
     commandLayout_->addLayout(gridLayout_);
     commandLayout_->addLayout(solverSwapLayout_);
@@ -111,23 +111,30 @@ Mass_On_Spring::Mass_On_Spring(QWidget *parent) :
     mainLayout_->addLayout(commandLayout_);
     mainLayout_->addWidget(canvas_);
     setLayout(mainLayout_);
-
-
-
-
-
-
-
+    showMaximized();
+    setAttribute(Qt::WA_ShowWithoutActivating);
 
 }
-void Mass_On_Spring::restartSimulation()
+void Mass_On_Spring::stopSimulation()
 {
-   canvas_->restartSimulation();
+   canvas_->stopSimulation();
+   massSpinBox_->setEnabled(true);
+   springConstantSpinBox_->setEnabled(true);
+   xSpinBox_->setEnabled(true);
+   lSpinBox_->setEnabled(true);
+   thetaSpinBox_->setEnabled(true);
+   modifiedEulerSolver_->setEnabled(true);
 }
 
 void Mass_On_Spring::startSimulation()
 {
     canvas_->startSimulation(massSpinBox_->value(),springConstantSpinBox_->value(),thetaSpinBox_->value() * M_PI,lSpinBox_->value(),xSpinBox_->value());
+    massSpinBox_->setEnabled(false);
+    springConstantSpinBox_->setEnabled(false);
+    xSpinBox_->setEnabled(false);
+    lSpinBox_->setEnabled(false);
+    thetaSpinBox_->setEnabled(false);
+    modifiedEulerSolver_->setEnabled(false);
 }
 
 void Mass_On_Spring::DiffEqSolverChanged()

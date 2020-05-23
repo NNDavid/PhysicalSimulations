@@ -31,9 +31,9 @@ void QSFML_DoublePendulum::setDiffEqSolver(const solver::DiffEqSolver diff)
 {
     diff_ = diff;
 }
-void QSFML_DoublePendulum::restartSimulation()
+void QSFML_DoublePendulum::stopSimulation()
 {
-    solver_->restartSimulation();
+    pause_ = true;
 }
 void QSFML_DoublePendulum::startSimulation(const double mass1,const double length1,const double mass2,const double length2,const double theta1, const double theta2)
 {

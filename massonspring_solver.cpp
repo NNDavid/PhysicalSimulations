@@ -34,7 +34,6 @@ MassOnSpring_TrajectoryDrawer::MassOnSpring_TrajectoryDrawer(sf::RenderWindow* w
 MassOnSpring_TrajectoryDrawer::~MassOnSpring_TrajectoryDrawer(){}
 void MassOnSpring_TrajectoryDrawer::draw(const double theta, const double x,const double l)
 {
-    std::cout << "trajectory" << std::endl;
     double canvas_x = (x * window_->getSize().y / 2.0) / l;
     sf::Vector2f position(window_->getSize().x / 2.0 + (canvas_x + window_->getSize().y / 2.0) * sin(theta) ,(canvas_x + window_->getSize().y / 2.0) * cos(theta));
     body_.setPosition(position);
@@ -56,7 +55,7 @@ namespace solver {
 
 //Abstract
 
-MassOnSpring_Solver::MassOnSpring_Solver(sf::RenderWindow* window):Solver(window),data_(new simdata::SimulationData(3,1)),drawer_(new draw::MassOnSpring_SimulationDrawer(window))
+MassOnSpring_Solver::MassOnSpring_Solver(sf::RenderWindow* window):Solver(window),data_(new simdata::SimulationData(5,1)),drawer_(new draw::MassOnSpring_SimulationDrawer(window))
 {
     data_->setLabelText("Body data",0,0);
     data_->show();
@@ -90,7 +89,6 @@ void MassOnSpring_Solver::setDrawer(const draw::DrawType draw)
 {
     if(draw != drawer_->getDrawType())
     {
-     //   delete drawer_;
         switch(draw)
         {
             case draw::Simulation: drawer_ = new draw::MassOnSpring_SimulationDrawer(window_);break;
@@ -112,7 +110,7 @@ void  MassOnSpring_ModifiedEulerSolver::restartSimulation()
 
         x_ = x_initial_;
         xvel_ = 0;
-
+        data_->raise();
         clock_.restart();
 
 }
@@ -144,6 +142,8 @@ void  MassOnSpring_ModifiedEulerSolver::draw()
 
         data_->setLabelText("Θ  = " + QString::number(theta_ / M_PI,'f',3) + " π",1,0);
         data_->setLabelText("Θ velocity = " + QString::number(thetavel_ / M_PI,'f',3) + " π / s",2,0);
+        data_->setLabelText("x  = " + QString::number(x_,'f',3) + " m",3,0);
+        data_->setLabelText("x velocity = " + QString::number(xvel_,'f',3) + " m / s",4,0);
 
         told_ = time_now;
 }

@@ -13,7 +13,7 @@ public:
     QSFML_DoublePendulum(QWidget* parent, const QPoint& position, const QSize& size);
     ~QSFML_DoublePendulum();
     void setDiffEqSolver(const solver::DiffEqSolver diff);
-    void restartSimulation();
+    void stopSimulation();
     void startSimulation(const double mass1,const double length1,const double mass2,const double length2,const double theta1, const double theta2);
     void changeDraw(const bool is_checked);
 

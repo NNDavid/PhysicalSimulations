@@ -42,6 +42,7 @@ void HarmonicOscillator_ExactSolver::restartSimulation()
 {
 
     circular_frequency_ = sqrt(elastic_constant_ / mass_);
+        data_->raise();
     clock_.restart();
 }
 
