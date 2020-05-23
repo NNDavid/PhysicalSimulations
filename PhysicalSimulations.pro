@@ -16,41 +16,41 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    doublependulum.cpp \
-    doublependulum_solver.cpp \
+    doublependulum/doublependulum.cpp \
+    doublependulum/doublependulum_solver.cpp \
     drawer.cpp \
-    harmonic_oscillation.cpp \
-    harmonicoscillator_solver.cpp \
+    harmonicoscillator/harmonic_oscillation.cpp \
+    harmonicoscillator/harmonicoscillator_solver.cpp \
     main.cpp \
     mainmenu.cpp \
-    mass_on_spring.cpp \
-    massonspring_solver.cpp \
-    oscillating_support_pendulum.cpp \
-    oscillatingsupportpendulum_solver.cpp \
-    qsfml_doublependulum.cpp \
-    qsfml_harmonicoscillation.cpp \
-    qsfml_massonspring.cpp \
-    qsfml_oscillatingsupportpendulum.cpp \
+    massonspring/mass_on_spring.cpp \
+    massonspring/massonspring_solver.cpp \
+    oscillatingsupportpendulum/oscillating_support_pendulum.cpp \
+    oscillatingsupportpendulum/oscillatingsupportpendulum_solver.cpp \
+    doublependulum/qsfml_doublependulum.cpp \
+    harmonicoscillator/qsfml_harmonicoscillation.cpp \
+    massonspring/qsfml_massonspring.cpp \
+    oscillatingsupportpendulum/qsfml_oscillatingsupportpendulum.cpp \
     qsfmlcanvas.cpp \
     simulationdata.cpp \
     solver.cpp \
     spring.cpp
 
 HEADERS += \
-    doublependulum.h \
-    doublependulum_solver.h \
+    doublependulum/doublependulum.h \
+    doublependulum/doublependulum_solver.h \
     drawer.h \
-    harmonic_oscillation.h \
-    harmonicoscillator_solver.h \
+    harmonicoscillator/harmonic_oscillation.h \
+    harmonicoscillator/harmonicoscillator_solver.h \
     mainmenu.h \
-    mass_on_spring.h \
-    massonspring_solver.h \
-    oscillating_support_pendulum.h \
-    oscillatingsupportpendulum_solver.h \
-    qsfml_doublependulum.h \
-    qsfml_harmonicoscillation.h \
-    qsfml_massonspring.h \
-    qsfml_oscillatingsupportpendulum.h \
+    massonspring/mass_on_spring.h \
+    massonspring/massonspring_solver.h \
+    oscillatingsupportpendulum/oscillating_support_pendulum.h \
+    oscillatingsupportpendulum/oscillatingsupportpendulum_solver.h \
+    doublependulum/qsfml_doublependulum.h \
+    harmonicoscillator/qsfml_harmonicoscillation.h \
+    massonspring/qsfml_massonspring.h \
+    oscillatingsupportpendulum//qsfml_oscillatingsupportpendulum.h \
     qsfmlcanvas.h \
     simulationdata.h \
     solver.h \

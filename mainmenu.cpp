@@ -1,9 +1,9 @@
 #include "mainmenu.h"
-#include "harmonic_oscillation.h"
+#include "harmonicoscillator/harmonic_oscillation.h"
+#include "massonspring/mass_on_spring.h"
+#include "oscillatingsupportpendulum/oscillating_support_pendulum.h"
+#include "doublependulum/doublependulum.h"
 #include <QSizePolicy>
-#include "mass_on_spring.h"
-#include "oscillating_support_pendulum.h"
-#include "doublependulum.h"
 #include <iostream>
 typedef QVector<QPushButton*>::size_type vec_size;
 MainMenu::MainMenu(QWidget *parent) : QWidget(parent)

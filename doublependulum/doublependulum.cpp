@@ -96,8 +96,8 @@ DoublePendulum::DoublePendulum(QWidget *parent) :
     connect(startSimulation_,SIGNAL(clicked()),this,SLOT(startSimulation()));
     connect(stopSimulation_,SIGNAL(clicked()),this,SLOT(stopSimulation()));
 
-    connect(RK4_Solver,SIGNAL(clicked()),this,SLOT(DiffEqSolverChanged()));
 
+    connect(RK4_Solver,SIGNAL(clicked()),this,SLOT(DiffEqSolverChanged()));
 
     gridLayout_->addWidget(mass1Label_,0,0);
     gridLayout_->addWidget(mass1SpinBox_,0,1);

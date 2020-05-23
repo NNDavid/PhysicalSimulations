@@ -2,7 +2,6 @@
 #include <QFrame>
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "qsfml_harmonicoscillation.h"
 #include "mainmenu.h"
 int main(int argc, char **argv)
 {
