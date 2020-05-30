@@ -1,4 +1,5 @@
 #include "massonspring_solver.h"
+#include <QMessageBox>
 #include <math.h>
 #include <iostream>
 namespace draw
@@ -14,10 +15,16 @@ MassOnSpring_SimulationDrawer::MassOnSpring_SimulationDrawer(sf::RenderWindow* w
     body_.setOrigin(body_.getRadius(),body_.getRadius());
 }
 MassOnSpring_SimulationDrawer::~MassOnSpring_SimulationDrawer(){}
-void MassOnSpring_SimulationDrawer::draw(const double theta, const double x,const double l)
+void MassOnSpring_SimulationDrawer::draw(const MassOnSpring_DrawData& data)
 {
-    double canvas_x = (x * window_->getSize().y / 2.0) / l;
-    sf::Vector2f position(window_->getSize().x / 2.0 + (canvas_x + window_->getSize().y / 2.0) * sin(theta) ,(canvas_x + window_->getSize().y / 2.0) * cos(theta));
+    Drawer::draw(data);
+    if(msgbox == nullptr && draw_data.theta != draw_data.theta)
+    {
+        msgbox = new QMessageBox(QMessageBox::Icon::Critical,"Simulation has crashed","We are sorry to inform you that the differential equation solver has crashed!",QMessageBox::Button::Yes);
+        msgbox->show();
+    }
+    double canvas_x = (draw_data.x * window_->getSize().y / 2.0) / draw_data.l;
+    sf::Vector2f position(window_->getSize().x / 2.0 + (canvas_x + window_->getSize().y / 2.0) * sin(draw_data.theta) ,(canvas_x + window_->getSize().y / 2.0) * cos(draw_data.theta));
     body_.setPosition(position);
     spring_.draw(window_,sf::Vector2f(window_->getSize().x / 2.0,0),position);
     window_->draw(body_);
@@ -32,10 +39,16 @@ MassOnSpring_TrajectoryDrawer::MassOnSpring_TrajectoryDrawer(sf::RenderWindow* w
     body_.setOrigin(body_.getRadius(),body_.getRadius());
 }
 MassOnSpring_TrajectoryDrawer::~MassOnSpring_TrajectoryDrawer(){}
-void MassOnSpring_TrajectoryDrawer::draw(const double theta, const double x,const double l)
+void MassOnSpring_TrajectoryDrawer::draw(const MassOnSpring_DrawData& data)
 {
-    double canvas_x = (x * window_->getSize().y / 2.0) / l;
-    sf::Vector2f position(window_->getSize().x / 2.0 + (canvas_x + window_->getSize().y / 2.0) * sin(theta) ,(canvas_x + window_->getSize().y / 2.0) * cos(theta));
+    Drawer::draw(data);
+    if(msgbox == nullptr && draw_data.theta != draw_data.theta)
+    {
+        msgbox = new QMessageBox(QMessageBox::Icon::Critical,"Simulation has crashed","We are sorry to inform you that the differential equation solver has crashed!",QMessageBox::Button::Yes);
+        msgbox->show();
+    }
+    double canvas_x = (draw_data.x * window_->getSize().y / 2.0) / draw_data.l;
+    sf::Vector2f position(window_->getSize().x / 2.0 + (canvas_x + window_->getSize().y / 2.0) * sin(draw_data.theta) ,(canvas_x + window_->getSize().y / 2.0) * cos(draw_data.theta));
     body_.setPosition(position);
 
     if(trajectory_.size() > 500) trajectory_.pop_back();
@@ -55,14 +68,13 @@ namespace solver {
 
 //Abstract
 
-MassOnSpring_Solver::MassOnSpring_Solver(sf::RenderWindow* window):Solver(window),data_(new simdata::SimulationData(5,1)),drawer_(new draw::MassOnSpring_SimulationDrawer(window))
+MassOnSpring_Solver::MassOnSpring_Solver(sf::RenderWindow* window,const int rows, const int cols):Solver(window,new draw::MassOnSpring_SimulationDrawer(window),rows, cols)
 {
     data_->setLabelText("Body data",0,0);
     data_->show();
 }
 MassOnSpring_Solver::~MassOnSpring_Solver()
 {
-    delete data_;
 }
 
 void MassOnSpring_Solver::setParameters(const double mass, const double elastic_constant, const double theta_initial,const double l,const double x)
@@ -138,7 +150,7 @@ void  MassOnSpring_ModifiedEulerSolver::draw()
         theta_ += dt * thetavel_tmp / 2.0;
         x_ += dt * xvel_tmp / 2.0;
 
-        drawer_->draw(theta_,x_,l_);
+        drawer_->draw(draw::MassOnSpring_DrawData(theta_,x_,l_));
 
         data_->setLabelText("Θ  = " + QString::number(theta_ / M_PI,'f',3) + " π",1,0);
         data_->setLabelText("Θ velocity = " + QString::number(thetavel_ / M_PI,'f',3) + " π / s",2,0);

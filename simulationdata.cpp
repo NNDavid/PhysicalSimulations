@@ -2,7 +2,7 @@
 #include <cassert>
 namespace simdata {
 
-SimulationData::SimulationData(const int row_size, const int column_size,QWidget* parent):QWidget(parent),mainLayout_(new QGridLayout(this))
+SimulationData::SimulationData(const int row_size, const int column_size,QWidget* parent):QWidget(parent),mainLayout_(new QGridLayout(this)),pause_(true)
 {
     labels_.resize(row_size);
     for(int i = 0 ;i < labels_.size();i++)
@@ -19,9 +19,19 @@ SimulationData::SimulationData(const int row_size, const int column_size,QWidget
 
 void SimulationData::setLabelText(const QString& str,const int row,const int column)
 {
-    if(row >= labels_.size()) assert(false);
-    else if(column >= labels_[row].size()) assert(false);
-    else labels_[row][column]->setText(str);
+    assert(row < labels_.size());
+    assert(column < labels_[row].size());
+    if(!pause_) labels_[row][column]->setText(str);
+}
+
+void SimulationData::pause()
+{
+    pause_ = true;
+}
+
+void SimulationData::unpause()
+{
+    pause_ = false;
 }
 
 }

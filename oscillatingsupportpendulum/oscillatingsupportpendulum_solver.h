@@ -4,14 +4,22 @@
 #include "drawer.h"
 #include "simulationdata.h"
 #include <deque>
+#include <climits>
 namespace draw{
 
- class OscillatingSupportPendulum_Drawer:public Drawer
+struct OscillatingSupportPendulum_DrawData{
+    double support_position;
+    double theta;
+    OscillatingSupportPendulum_DrawData(const double sup_pos = std::numeric_limits<double>::max(),const double th = 0):support_position(sup_pos),theta(th){}
+
+
+};
+
+ class OscillatingSupportPendulum_Drawer:public Drawer<OscillatingSupportPendulum_DrawData>
  {
    public:
      OscillatingSupportPendulum_Drawer(sf::RenderWindow* window);
-     virtual ~OscillatingSupportPendulum_Drawer(){window_->clear(sf::Color::Black);}
-     virtual void draw(const double support_position, const double theta) = 0;
+     virtual ~OscillatingSupportPendulum_Drawer(){}
      virtual DrawType getDrawType() const override = 0;
      virtual void reset() = 0;
 
@@ -26,7 +34,7 @@ namespace draw{
 
      OscillatingSupportPendulum_SimulationDrawer(sf::RenderWindow* window);
      ~OscillatingSupportPendulum_SimulationDrawer(){}
-     void draw(const double support_position, const double theta) override;
+     void draw(const OscillatingSupportPendulum_DrawData& data) override;
      DrawType getDrawType() const override;
      void reset() override;
  private:
@@ -43,14 +51,14 @@ namespace draw{
 
      OscillatingSupportPendulum_TrajectoryDrawer(sf::RenderWindow* window);
      ~OscillatingSupportPendulum_TrajectoryDrawer(){}
-     void draw(const double support_position, const double theta) override;
+     void draw(const OscillatingSupportPendulum_DrawData& data) override;
      DrawType getDrawType() const override;
      void reset() override;
  private:
      sf::RectangleShape support_;
      sf::RectangleShape rod_;
      bool first;
-          std::deque<sf::CircleShape> trajectory;
+     std::deque<sf::CircleShape> trajectory;
 
 
  };
@@ -58,19 +66,16 @@ namespace draw{
 
 namespace solver {
 
-class OscillatingSupportPendulum_Solver:public Solver
+class OscillatingSupportPendulum_Solver:public Solver<draw::OscillatingSupportPendulum_Drawer>
 {
 public:
-    OscillatingSupportPendulum_Solver(sf::RenderWindow* window);
+    OscillatingSupportPendulum_Solver(sf::RenderWindow* window,const int rows = 3, const int cols = 2);
     virtual ~OscillatingSupportPendulum_Solver();
-    virtual void draw() override = 0;
     virtual void restartSimulation() override = 0;
     virtual DiffEqSolver getSolverType() const override = 0;
     void setParameters(const double length,const double amplitude,const double period,const double theta_initial);
     void setDrawer(const draw::DrawType draw);
 protected:
-    simdata::SimulationData* data_;
-    draw::OscillatingSupportPendulum_Drawer* drawer_;
     double length_;
     double amplitude_;
     double period_;
@@ -95,10 +100,6 @@ public:
     void draw() override;
     void restartSimulation() override;
     DiffEqSolver getSolverType() const override;
-private:
-    const double h = 0.001;
-
-
 };
 
 }

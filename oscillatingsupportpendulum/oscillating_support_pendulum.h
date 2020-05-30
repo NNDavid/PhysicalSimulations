@@ -39,6 +39,7 @@ private:
 
     QDoubleSpinBox* amplitudeSpinBox_;
     QLabel* amplitudeLabel_;
+    QLabel* mLabel2_;
 
     QDoubleSpinBox* periodSpinBox_;
     QLabel* periodLabel_;

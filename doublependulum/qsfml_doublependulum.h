@@ -3,7 +3,7 @@
 #include "qsfmlcanvas.h"
 #include "doublependulum_solver.h"
 #include "solver.h"
-namespace doublependulum {
+
 
 
 class QSFML_DoublePendulum: public QSFML_Canvas
@@ -22,8 +22,7 @@ public:
      void onUpdate() override;
      solver::DoublePendulum_Solver* solver_;
      solver::DiffEqSolver diff_;
-     bool pause_;
 };
-}
+
 
 #endif // QSFML_DOUBLEPENDULUM_H

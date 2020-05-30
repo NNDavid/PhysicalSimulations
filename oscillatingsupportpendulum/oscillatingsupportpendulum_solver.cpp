@@ -21,15 +21,21 @@ OscillatingSupportPendulum_SimulationDrawer::OscillatingSupportPendulum_Simulati
     rod_.setFillColor(sf::Color::White);
 }
 
-void OscillatingSupportPendulum_SimulationDrawer::draw(const double support_position, const double theta)
+void OscillatingSupportPendulum_SimulationDrawer::draw(const OscillatingSupportPendulum_DrawData& data)
 {
-    body_.setPosition((window_->getSize().x / 2.0) + support_position + (window_->getSize().y / 4.0) * sin(theta),window_->getSize().y / 2.0  + (window_->getSize().y / 4.0) * cos(theta));
+    Drawer::draw(data);
+    if(msgbox == nullptr && draw_data.theta != draw_data.theta)
+    {
+        msgbox = new QMessageBox(QMessageBox::Icon::Critical,"Simulation has crashed","We are sorry to inform you that the differential equation solver has crashed!",QMessageBox::Button::Yes);
+        msgbox->show();
+    }
 
-    rod_.setPosition(window_->getSize().x / 2.0 + support_position, window_->getSize().y / 2.0);
-    rod_.setRotation( -180 * theta / M_PI);
+    body_.setPosition((window_->getSize().x / 2.0) + draw_data.support_position + (window_->getSize().y / 4.0) * sin(draw_data.theta),window_->getSize().y / 2.0  + (window_->getSize().y / 4.0) * cos(draw_data.theta));
 
-    support_.setPosition(window_->getSize().x / 2.0 + support_position, window_->getSize().y / 2.0);
-    window_->clear(sf::Color::Black);
+    rod_.setPosition(window_->getSize().x / 2.0 + draw_data.support_position, window_->getSize().y / 2.0);
+    rod_.setRotation( -180 * draw_data.theta / M_PI);
+
+    support_.setPosition(window_->getSize().x / 2.0 + draw_data.support_position, window_->getSize().y / 2.0);
     window_->draw(rod_);
     window_->draw(support_);
     window_->draw(body_);
@@ -49,12 +55,18 @@ OscillatingSupportPendulum_TrajectoryDrawer::OscillatingSupportPendulum_Trajecto
     body_.setFillColor(sf::Color::Red);
     body_.setPosition(window_->getSize().x / 2.0,0.75 * window_->getSize().y);
 }
-void OscillatingSupportPendulum_TrajectoryDrawer::draw(const double support_position, const double theta)
+void OscillatingSupportPendulum_TrajectoryDrawer::draw(const OscillatingSupportPendulum_DrawData& data)
 {
-    body_.setPosition((window_->getSize().x / 2.0) + support_position + (window_->getSize().y / 4.0) * sin(theta),window_->getSize().y / 2.0  + (window_->getSize().y / 4.0) * cos(theta));
+
+    Drawer::draw(data);
+    if(msgbox == nullptr && draw_data.theta != draw_data.theta)
+    {
+        msgbox = new QMessageBox(QMessageBox::Icon::Critical,"Simulation has crashed","We are sorry to inform you that the differential equation solver has crashed!",QMessageBox::Button::Yes);
+        msgbox->show();
+    }
+    body_.setPosition((window_->getSize().x / 2.0) + draw_data.support_position + (window_->getSize().y / 4.0) * sin(draw_data.theta),window_->getSize().y / 2.0  + (window_->getSize().y / 4.0) * cos(draw_data.theta));
     if(trajectory.size() > 5000) trajectory.pop_back();
     trajectory.push_front(body_);
-    window_->clear(sf::Color::Black);
     for(std::deque<sf::CircleShape>::iterator it = trajectory.begin();it != trajectory.end();it++) window_->draw(*it);
 
 }
@@ -70,10 +82,8 @@ void OscillatingSupportPendulum_TrajectoryDrawer::reset()
 namespace solver{
 
 //abstract
-OscillatingSupportPendulum_Solver::OscillatingSupportPendulum_Solver(sf::RenderWindow* window):
-    Solver(window),
-    drawer_(new draw::OscillatingSupportPendulum_SimulationDrawer(window)),
-    data_(new simdata::SimulationData(3,2))
+OscillatingSupportPendulum_Solver::OscillatingSupportPendulum_Solver(sf::RenderWindow* window,const int rows, const int cols):
+    Solver(window,new draw::OscillatingSupportPendulum_SimulationDrawer(window),rows,cols)
 {
     data_->setLabelText("Body data",0,0);
     data_->setLabelText("Support position",0,1);
@@ -148,12 +158,10 @@ void OscillatingSupportPendulum_ImplicitEulerSolver::draw()
 {
     sf::Time time_now = clock_.getElapsedTime();
     double dt = (time_now - told_).asSeconds();
-    std::cout << dt << std::endl;
-
    theta_ += dt * thetavel_;
    thetavel_ += dt * getBodyAcceleration(theta_,getSupportAcceleration(time_now.asSeconds() + dt));
 
-   drawer_->draw(getBodyCanvasPosition(time_now.asSeconds()),theta_);
+   drawer_->draw(draw::OscillatingSupportPendulum_DrawData(getBodyCanvasPosition(time_now.asSeconds()),theta_));
 
    data_->setLabelText("Θ = " + QString::number(theta_ / M_PI,'f',3) + " π",1,0);
    data_->setLabelText("Θ velocity = " + QString::number(thetavel_ / M_PI,'f',3) + " π / s",2,0);

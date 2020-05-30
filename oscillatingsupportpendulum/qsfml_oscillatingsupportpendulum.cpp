@@ -1,14 +1,15 @@
 #include "qsfml_oscillatingsupportpendulum.h"
 #include <SFML/Graphics.hpp>
 #include "drawer.h"
-namespace oscillatingsupportpendulum {
 
-QSFML_OscillatingSupportPendulum::QSFML_OscillatingSupportPendulum(QWidget* parent, const QPoint& position, const QSize& size):QSFML_Canvas(parent,position,size),diff_(solver::IMPLICIT_EULER),pause_(true){}
 
-void QSFML_OscillatingSupportPendulum::onInit()
-{
-    solver_ = new solver::OscillatingSupportPendulum_ImplicitEulerSolver(this);
-}
+QSFML_OscillatingSupportPendulum::QSFML_OscillatingSupportPendulum(QWidget* parent, const QPoint& position, const QSize& size):
+    QSFML_Canvas(parent,position,size),
+    diff_(solver::IMPLICIT_EULER),
+    solver_(new solver::OscillatingSupportPendulum_ImplicitEulerSolver(this))
+    {}
+
+void QSFML_OscillatingSupportPendulum::onInit(){}
 void QSFML_OscillatingSupportPendulum::onUpdate()
 {
 
@@ -21,11 +22,10 @@ void QSFML_OscillatingSupportPendulum::onUpdate()
            sf::RenderWindow::setView(sf::View(visibleArea));
          }
     }
-     // Draw new frame
-     if(!pause_) solver_->draw();
+sf::RenderWindow::clear(sf::Color::Black);
+solver_->draw();
 
 }
-
 
 void QSFML_OscillatingSupportPendulum::setDiffEqSolver(const solver::DiffEqSolver diff)
 {
@@ -34,28 +34,22 @@ void QSFML_OscillatingSupportPendulum::setDiffEqSolver(const solver::DiffEqSolve
 
 void QSFML_OscillatingSupportPendulum::stopSimulation()
 {
-    pause_ = true;
+    solver_->pause();
 }
 
 void QSFML_OscillatingSupportPendulum::startSimulation( const double length, const double amplitude,const double period,const double initialTheta)
 {
-    pause_ = true;
+    solver_->pause();
     solver_ ->setParameters(length,amplitude,period,initialTheta);
-    sf::RenderWindow::clear(sf::Color::Black);
     solver_->restartSimulation();
-    pause_ = false;
+    solver_->unpause();
 }
 
 void QSFML_OscillatingSupportPendulum::changeDraw(const bool is_checked)
 {
-    if(pause_) solver_->setDrawer(is_checked ? draw::Trajectory : draw::Simulation);
-    else
-    {
-        pause_ = true;
-        solver_->setDrawer(is_checked ? draw::Trajectory : draw::Simulation);
-        pause_ = false;
-    }
+    solver_->pause();
+    solver_->setDrawer(is_checked ? draw::Trajectory : draw::Simulation);
+    solver_->unpause();
 }
 
 
-} //namespace oscillatingsupportpendulum

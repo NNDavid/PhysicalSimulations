@@ -25,9 +25,8 @@ public:
 private:
     void onInit() override;
     void onUpdate() override;
-    solver::HarmonicOscillator_Solver* solver_;
     solver::DiffEqSolver diff_;
-    bool pause_;
+    solver::HarmonicOscillator_Solver* solver_;
 };
 }
 

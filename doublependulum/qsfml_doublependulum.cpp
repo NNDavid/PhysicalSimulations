@@ -1,7 +1,5 @@
 #include "qsfml_doublependulum.h"
-namespace doublependulum {
-
-
+#include <iostream>
 QSFML_DoublePendulum::QSFML_DoublePendulum(QWidget* parent, const QPoint& position, const QSize& size):QSFML_Canvas(parent,position,size),solver_(new solver::DoublePendulum_RK4Solver(this)),diff_(solver::RK4)
 {
 
@@ -19,12 +17,9 @@ void QSFML_DoublePendulum::onUpdate()
            sf::RenderWindow::setView(sf::View(visibleArea));
          }
     }
-    if(!pause_)
-    {
+
     sf::RenderWindow::clear(sf::Color::Black);
-     solver_->draw();
-   //  std::cout<<"drawn"<<std::endl;
-    }
+    solver_->draw();
 }
 
 void QSFML_DoublePendulum::setDiffEqSolver(const solver::DiffEqSolver diff)
@@ -33,31 +28,29 @@ void QSFML_DoublePendulum::setDiffEqSolver(const solver::DiffEqSolver diff)
 }
 void QSFML_DoublePendulum::stopSimulation()
 {
-    pause_ = true;
+    solver_->pause();
 }
 void QSFML_DoublePendulum::startSimulation(const double mass1,const double length1,const double mass2,const double length2,const double theta1, const double theta2)
 {
-    pause_ = true;
+    solver_->pause();
 
     if(solver_->getSolverType() != diff_)
     {
         delete solver_;
         if(diff_ == solver::RK4) solver_ = new solver::DoublePendulum_RK4Solver(this);
         else if(diff_ == solver::IMPLICIT_EULER) solver_ = new solver::DoublePendulum_ImplicitEulerSolver(this);
+        else assert(false);
     }
 
     solver_->setParameters(mass1,length1,mass2,length2,theta1,theta2);
     solver_->restartSimulation();
-    pause_ = false;
+    solver_->unpause();
 }
 void QSFML_DoublePendulum::changeDraw(const bool is_checked)
 {
-    if(pause_) solver_->setDrawer(is_checked ? draw::Trajectory : draw::Simulation);
-    else
-    {
-        pause_ = true;
-        solver_->setDrawer(is_checked ? draw::Trajectory : draw::Simulation);
-        pause_ = false;
-    }
-}
+
+     solver_->pause();
+     solver_->setDrawer(is_checked ? draw::Trajectory : draw::Simulation);
+     solver_->unpause();
+
 }

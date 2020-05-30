@@ -1,3 +1,5 @@
+
+
 #include "doublependulum.h"
 #include <cmath>
 namespace doublependulum {

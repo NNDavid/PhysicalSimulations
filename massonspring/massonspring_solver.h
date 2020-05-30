@@ -6,14 +6,25 @@
 #include "simulationdata.h"
 #include <queue>
 #include <math.h>
+#include <climits>
 
 namespace draw {
-class  MassOnSpring_Drawer:public Drawer
+
+struct MassOnSpring_DrawData
+{
+    double theta;
+    double x;
+    double l;
+    MassOnSpring_DrawData(const double th = 0, const double xx = 0, const double ll = 0):theta(th),x(xx),l(ll){}
+};
+
+
+class  MassOnSpring_Drawer:public Drawer<MassOnSpring_DrawData>
 {
   public:
      MassOnSpring_Drawer(sf::RenderWindow* window);
     virtual ~MassOnSpring_Drawer();
-    virtual void draw(const double theta, const double x,const double l) = 0;
+    virtual void draw(const MassOnSpring_DrawData& data) override = 0;
     virtual DrawType getDrawType() const override = 0;
 
    protected:
@@ -27,7 +38,7 @@ public:
 
      MassOnSpring_SimulationDrawer(sf::RenderWindow* window);
     ~MassOnSpring_SimulationDrawer();
-    void draw(const double theta, const double x,const double l) override;
+    void draw(const MassOnSpring_DrawData& data) override;
     DrawType getDrawType() const override;
 private:
     Spring spring_;
@@ -40,7 +51,7 @@ public:
 
      MassOnSpring_TrajectoryDrawer(sf::RenderWindow* window);
     ~ MassOnSpring_TrajectoryDrawer();
-    void draw(const double theta, const double x,const double l) override;
+    void draw(const MassOnSpring_DrawData& data) override;
     DrawType getDrawType() const override;
 private:
    std::deque<sf::CircleShape> trajectory_;
@@ -54,10 +65,10 @@ private:
 
 namespace solver {
 
-class MassOnSpring_Solver:public Solver
+class MassOnSpring_Solver:public Solver<draw::MassOnSpring_Drawer>
 {
 public:
-    MassOnSpring_Solver(sf::RenderWindow* window);
+    MassOnSpring_Solver(sf::RenderWindow* window, const int rows =5, const int cols = 1);
     virtual ~MassOnSpring_Solver();
     virtual void draw() = 0;
     void setParameters(const double mass, const double elastic_constant, const double theta_initial,const double l,const double x);
@@ -65,8 +76,6 @@ public:
     void setDrawer(const draw::DrawType draw);
 
     protected:
-    simdata::SimulationData* data_;
-    draw::MassOnSpring_Drawer* drawer_;
     double mass_;
     double elastic_constant_;
     double theta_initial_;

@@ -34,6 +34,9 @@ Oscillating_Support_Pendulum::Oscillating_Support_Pendulum(QWidget *parent) : QW
         amplitudeLabel_ = new QLabel(this);
         amplitudeLabel_->setText("A = ");
 
+        mLabel2_ = new QLabel(this);
+        mLabel2_->setText("m");
+
 
         periodSpinBox_ = new QDoubleSpinBox(this);
         periodSpinBox_->setRange(1,10);
@@ -85,7 +88,7 @@ Oscillating_Support_Pendulum::Oscillating_Support_Pendulum(QWidget *parent) : QW
 
         gridLayout_->addWidget(amplitudeLabel_,1,0);
         gridLayout_->addWidget(amplitudeSpinBox_,1,1);
-        gridLayout_->addWidget(mLabel_,1,2);
+        gridLayout_->addWidget(mLabel2_,1,2);
 
         gridLayout_->addWidget(periodLabel_,2,0);
         gridLayout_->addWidget(periodSpinBox_,2,1);
@@ -107,7 +110,6 @@ Oscillating_Support_Pendulum::Oscillating_Support_Pendulum(QWidget *parent) : QW
 
         showMaximized();
         setAttribute(Qt::WA_ShowWithoutActivating);
-                canvas_->show();
 }
 void Oscillating_Support_Pendulum::stopSimulation()
 {

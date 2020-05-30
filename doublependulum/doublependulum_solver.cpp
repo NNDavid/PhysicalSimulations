@@ -1,7 +1,7 @@
 #include "doublependulum_solver.h"
-#include <cmath>
-#include <iostream>
-
+#include <QWidget>
+#include <math.h>
+#include <QMessageBox>
 
 namespace draw {
 
@@ -41,16 +41,23 @@ DrawType DoublePendulum_SimulationDrawer::getDrawType() const
 {
     return Simulation;
 }
-void DoublePendulum_SimulationDrawer::draw(const double theta1, const double theta2)
+void DoublePendulum_SimulationDrawer::draw(const DoublePendulum_DrawData& data)
 {
-    body1_.setPosition(window_->getSize().x / 2.0 + canvas_length1_ * sin(theta1),window_->getSize().y / 2.0 + canvas_length1_ * cos(theta1));
-    body2_.setPosition(body1_.getPosition() + sf::Vector2f(canvas_length2_ * sin(theta2),canvas_length2_ * cos(theta2)));
+    Drawer::draw(data);
+
+    if(msgbox == nullptr && draw_data.theta1 != draw_data.theta1)
+    {
+        msgbox = new QMessageBox(QMessageBox::Icon::Critical,"Simulation has crashed","We are sorry to inform you that the differential equation solver has crashed!",QMessageBox::Button::Yes);
+        msgbox->show();
+    }
+    body1_.setPosition(window_->getSize().x / 2.0 + canvas_length1_ * sin(draw_data.theta1),window_->getSize().y / 2.0 + canvas_length1_ * cos(draw_data.theta1));
+    body2_.setPosition(body1_.getPosition() + sf::Vector2f(canvas_length2_ * sin(draw_data.theta2),canvas_length2_ * cos(draw_data.theta2)));
 
     rod1_.setPosition(window_->getSize().x / 2.0,window_->getSize().y / 2.0);
-    rod1_.setRotation(-180.0 * theta1 / M_PI);
+    rod1_.setRotation(-180.0 * draw_data.theta1 / M_PI);
 
     rod2_.setPosition(body1_.getPosition());
-    rod2_.setRotation(-180.0 * theta2 / M_PI);
+    rod2_.setRotation(-180.0 * draw_data.theta2 / M_PI);
 
     window_->draw(rod1_);
     window_->draw(rod2_);
@@ -83,10 +90,17 @@ DoublePendulum_TrajectoryDrawer::DoublePendulum_TrajectoryDrawer(sf::RenderWindo
 }
 DoublePendulum_TrajectoryDrawer::~DoublePendulum_TrajectoryDrawer(){}
 DrawType DoublePendulum_TrajectoryDrawer::getDrawType() const{return Trajectory;}
-void DoublePendulum_TrajectoryDrawer::draw(const double theta1, const double theta2)
+void DoublePendulum_TrajectoryDrawer::draw(const DoublePendulum_DrawData& data)
 {
-    body1_.setPosition(window_->getSize().x / 2.0 + canvas_length1_ * sin(theta1),window_->getSize().y / 2.0 + canvas_length1_ * cos(theta1));
-    body2_.setPosition(body1_.getPosition() + sf::Vector2f(canvas_length2_ * sin(theta2),canvas_length2_ * cos(theta2)));
+    Drawer::draw(data);
+    if(msgbox == nullptr && draw_data.theta1 != draw_data.theta1)
+    {
+        msgbox = new QMessageBox(QMessageBox::Icon::Critical,"Simulation has crashed","We are sorry to inform you that the differential equation solver has crashed!",QMessageBox::Button::Yes);
+        msgbox->show();
+    }
+
+    body1_.setPosition(window_->getSize().x / 2.0 + canvas_length1_ * sin(draw_data.theta1),window_->getSize().y / 2.0 + canvas_length1_ * cos(draw_data.theta1));
+    body2_.setPosition(body1_.getPosition() + sf::Vector2f(canvas_length2_ * sin(draw_data.theta2),canvas_length2_ * cos(draw_data.theta2)));
 
     if(trajectory1_.size() > 10) trajectory1_.pop_back();
     trajectory1_.push_front(body1_);
@@ -110,16 +124,13 @@ void DoublePendulum_TrajectoryDrawer::reset(const double length1,const double le
 namespace solver {
 
 //abstract
-DoublePendulum_Solver::DoublePendulum_Solver(sf::RenderWindow* window):Solver(window),data_(new simdata::SimulationData(3,3)),drawer_(new draw::DoublePendulum_SimulationDrawer(window))
+DoublePendulum_Solver::DoublePendulum_Solver(sf::RenderWindow* window,const int rows, const int cols):Solver(window,new draw::DoublePendulum_SimulationDrawer(window),rows,cols)
 {
     data_->setLabelText("First body",0,0);
     data_->setLabelText("Second body",0,1);
-    data_->show();
 }
 DoublePendulum_Solver::~DoublePendulum_Solver(){
     delete drawer_;
-    data_->close();
-    delete data_;
 }
 void DoublePendulum_Solver::setParameters(const double mass1,const double length1,const double mass2,const double length2,const double theta1,const double theta2)
 {
@@ -170,11 +181,11 @@ void DoublePendulum_ImplicitEulerSolver::draw()
     theta1_ += theta1vel_ * dt;
     theta2_ += theta2vel_ * dt;
 
-    theta1vel_ +=dt * Theta1Acc(theta1_,theta2_,theta1vel_,theta2vel_);
+    theta1vel_ += dt * Theta1Acc(theta1_,theta2_,theta1vel_,theta2vel_);
 
-    theta2vel_ +=dt * Theta2Acc(theta1_,theta2_,theta1vel_,theta2vel_);
+    theta2vel_ += dt * Theta2Acc(theta1_,theta2_,theta1vel_,theta2vel_);
 
-    drawer_->draw(theta1_,theta2_);
+    drawer_->draw(draw::DoublePendulum_DrawData(theta1_,theta2_));
 
     data_->setLabelText("Θ = " + QString::number(theta1_ / M_PI,'f',3) + " π",1,0);
     data_->setLabelText("Θ = " + QString::number(theta2_ / M_PI,'f',3) + " π",1,1);
@@ -266,7 +277,7 @@ void DoublePendulum_RK4Solver::draw()
     theta1vel_ = theta1vel_tmp + dt * (k11 + 2.0 * k21 + 2.0 * k31 + k41) / 6.0;
     theta2vel_ = theta2vel_tmp +  dt * (k12 + 2.0 * k22 + 2.0 * k32 + k42) / 6.0;
 
-    drawer_->draw(theta1_,theta2_);
+    drawer_->draw(draw::DoublePendulum_DrawData(theta1_,theta2_));
     data_->setLabelText("Θ = " + QString::number(theta1_ / M_PI,'f',3) + " π",1,0);
     data_->setLabelText("Θ = " + QString::number(theta2_ / M_PI,'f',3) + " π",1,1);
 

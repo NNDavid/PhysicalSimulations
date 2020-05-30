@@ -13,8 +13,10 @@ class QSFML_Canvas : public QWidget,public sf::RenderWindow
 public:
     explicit QSFML_Canvas(QWidget* parent, const QPoint& position, const QSize& size, unsigned int FrameTime = 0);
     virtual ~QSFML_Canvas();
+    void pause();
+    void unpause();
 
-private:
+protected:
     virtual void onInit() = 0;
 
     virtual void onUpdate() = 0;
@@ -24,6 +26,7 @@ private:
     virtual void showEvent(QShowEvent*);
 
     virtual void paintEvent(QPaintEvent*);
+
     virtual void resizeEvent(QResizeEvent*);
 
     QTimer myTimer;

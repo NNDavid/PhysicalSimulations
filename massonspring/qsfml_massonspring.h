@@ -10,7 +10,7 @@
 #include "qsfmlcanvas.h"
 #include <iostream>
 #include "massonspring_solver.h"
-namespace massonspring{
+
 
 class QSFML_MassOnSpring:public QSFML_Canvas
 {
@@ -25,9 +25,8 @@ public:
  private:
      void onInit() override;
      void onUpdate() override;
-     solver::MassOnSpring_Solver* solver_;
      solver::DiffEqSolver diff_;
+     solver::MassOnSpring_Solver* solver_;
      bool pause_;
 };
-}
 #endif // QSFML_MASSONSPRING_H

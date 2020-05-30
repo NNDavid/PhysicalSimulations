@@ -18,7 +18,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     doublependulum/doublependulum.cpp \
     doublependulum/doublependulum_solver.cpp \
-    drawer.cpp \
     harmonicoscillator/harmonic_oscillation.cpp \
     harmonicoscillator/harmonicoscillator_solver.cpp \
     main.cpp \
@@ -33,7 +32,6 @@ SOURCES += \
     oscillatingsupportpendulum/qsfml_oscillatingsupportpendulum.cpp \
     qsfmlcanvas.cpp \
     simulationdata.cpp \
-    solver.cpp \
     spring.cpp
 
 HEADERS += \

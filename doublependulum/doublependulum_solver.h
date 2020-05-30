@@ -2,17 +2,26 @@
 #define DOUBLEPENDULUM_SOLVER_H
 #include "solver.h"
 #include "drawer.h"
+#include "simulationdata.h"
+#include <climits>
 #include <queue>
 #include <SFML/Graphics.hpp>
-#include "simulationdata.h"
 namespace draw {
-class DoublePendulum_Drawer:public Drawer
+
+struct DoublePendulum_DrawData
+{
+  double theta1;
+  double theta2;
+  DoublePendulum_DrawData(const double th1 = 0,const double th2 = 0):theta1(th1),theta2(th2){}
+};
+
+class DoublePendulum_Drawer:public Drawer<DoublePendulum_DrawData>
 {
 public:
     DoublePendulum_Drawer(sf::RenderWindow* window);
     virtual ~DoublePendulum_Drawer();
     virtual DrawType getDrawType() const override = 0;
-    virtual void draw(const double theta1, const double theta2) = 0;
+    virtual void draw(const DoublePendulum_DrawData& data) override = 0;
     virtual void reset(const double length1,const double length2);
 
 protected:
@@ -31,7 +40,7 @@ public:
     DoublePendulum_SimulationDrawer(sf::RenderWindow* window);
     ~DoublePendulum_SimulationDrawer();
     DrawType getDrawType() const override;
-    void draw(const double theta1, const double theta2) override;
+    void draw(const DoublePendulum_DrawData& data) override;
     void reset(const double length1,const double length2) override;
 
 private:
@@ -47,7 +56,7 @@ public:
     DoublePendulum_TrajectoryDrawer(sf::RenderWindow* window);
     ~DoublePendulum_TrajectoryDrawer();
     DrawType getDrawType() const override;
-    void draw(const double theta1, const double theta2) override;
+    void draw(const DoublePendulum_DrawData& data) override;
     void reset(const double length1,const double length2) override;
 private:
     std::deque<sf::CircleShape> trajectory1_;
@@ -62,10 +71,10 @@ private:
 
 namespace solver {
 
-class DoublePendulum_Solver:public Solver
+class DoublePendulum_Solver:public Solver<draw::DoublePendulum_Drawer>
 {
 public:
-    DoublePendulum_Solver(sf::RenderWindow* window);
+    DoublePendulum_Solver(sf::RenderWindow* window,const int rows = 3,const int cols = 3);
     virtual ~DoublePendulum_Solver();
     virtual void draw() override = 0;
     virtual void restartSimulation() override = 0;
@@ -74,8 +83,6 @@ public:
     void setDrawer(const draw::DrawType draw);
 
 protected:
-    simdata::SimulationData* data_;
-    draw::DoublePendulum_Drawer* drawer_;
     double mass1_;
     double length1_;
     double mass2_;
@@ -86,7 +93,6 @@ protected:
     double theta2_;
     double theta1vel_;
     double theta2vel_;
-    sf::Time told_;
     const double g = 9.81;
     double Theta1Acc(const double theta1,const double theta2,const double theta1vel,const double theta2vel) const;
     double Theta2Acc(const double theta1,const double theta2,const double theta1vel,const double theta2vel) const;

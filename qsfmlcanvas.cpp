@@ -1,6 +1,6 @@
+
 #include "qsfmlcanvas.h"
 #include<QResizeEvent>
-#include <iostream>
 #ifdef Q_WS_X11
     #include <Qt/qx11info_x11.h>
     #include <X11/Xlib.h>
@@ -28,7 +28,6 @@ QPaintEngine* QSFML_Canvas::paintEngine() const
 }
 void QSFML_Canvas::resizeEvent(QResizeEvent*)
 {
-    std::cout<<"here";
     sf::RenderWindow::setSize(sf::Vector2u(QWidget::width(), QWidget::height()));
 }
 
@@ -52,14 +51,7 @@ void QSFML_Canvas::showEvent(QShowEvent*)
 
             myInitialized = true;
 }
-/*void QSFML_Canvas::resizeEvent( QResizeEvent* event )
-{
-    sf::FloatRect visibleArea(0, 0, event->size().width(), event->size().height());
-    sf::RenderWindow::setView(sf::View(visibleArea));
-   //std::cout<<"here";
 
-    QWidget::resizeEvent(event);
-}*/
 void QSFML_Canvas::paintEvent(QPaintEvent*)
 {
     // Let the derived class do its specific stuff

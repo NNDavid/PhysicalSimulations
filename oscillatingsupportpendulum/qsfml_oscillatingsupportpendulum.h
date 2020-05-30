@@ -1,5 +1,6 @@
 #ifndef QSFML_OSCILLATINGSUPPORTPENDULUM_H
 #define QSFML_OSCILLATINGSUPPORTPENDULUM_H
+
 #include "qsfmlcanvas.h"
 #include "oscillatingsupportpendulum_solver.h"
 #include <QObject>
@@ -8,7 +9,7 @@
 #include <iostream>
 #include <tgmath.h>
 
-namespace oscillatingsupportpendulum{
+
 
 class QSFML_OscillatingSupportPendulum:public QSFML_Canvas
 {
@@ -23,13 +24,9 @@ public:
  private:
      void onInit() override;
      void onUpdate() override;
-     solver::OscillatingSupportPendulum_Solver* solver_;
      solver::DiffEqSolver diff_;
-     bool pause_;
+     solver::OscillatingSupportPendulum_Solver* solver_;
 };
-
-
-}
 
 
 #endif // QSFML_OSCILLATINGSUPPORTPENDULUM_H

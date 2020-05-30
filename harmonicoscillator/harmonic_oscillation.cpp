@@ -63,19 +63,26 @@ Harmonic_Oscillation::Harmonic_Oscillation(QWidget *parent) : QWidget(parent)
 
     solverSwapLayout_ = new QGridLayout(this);
 
-    exactSolver_ = new QRadioButton("Exact solution");
+    exactSolver_ = new QRadioButton(this);
+    exactSolver_->setText("Exact solution");
     exactSolver_->setChecked(true);
     connect(exactSolver_,SIGNAL(clicked()),this,SLOT(DiffEqSolverChanged()));
 
-    eulerSolver_ = new QRadioButton("Euler diffeq solver");
+    eulerSolver_ = new QRadioButton(this);
+    eulerSolver_->setText("Euler solver");
     connect(eulerSolver_,SIGNAL(clicked()),this,SLOT(DiffEqSolverChanged()));
+
+    compareEulerSolver_ = new QRadioButton(this);
+    compareEulerSolver_->setText("Compare Euler solver to Exact solution");
+    connect(compareEulerSolver_,SIGNAL(clicked()),this,SLOT(DiffEqSolverChanged()));
+
 
 
     solverSwapLayout_->addWidget(exactSolver_,0,0);
     solverSwapLayout_->addWidget(eulerSolver_,1,0);
     solverSwapLayout_->addWidget(startSimulation_,0,1);
     solverSwapLayout_->addWidget(stopSimulation_,1,1);
-    //solverSwapLayout_->addWidget(compareEulerSolver_,2,0);
+    solverSwapLayout_->addWidget(compareEulerSolver_,2,0);
 
     canvas_ = new QSFML_HarmonicOscillation(this, QPoint(20, 20), QSize(360, 360));
 
@@ -112,6 +119,7 @@ void Harmonic_Oscillation::stopSimulation()
     amplitudeSpinBox_->setEnabled(true);
     exactSolver_->setEnabled(true);
     eulerSolver_->setEnabled(true);
+    compareEulerSolver_->setEnabled(true);
 }
 
 void Harmonic_Oscillation::startSimulation()
@@ -122,6 +130,7 @@ void Harmonic_Oscillation::startSimulation()
     amplitudeSpinBox_->setEnabled(false);
     exactSolver_->setEnabled(false);
     eulerSolver_->setEnabled(false);
+    compareEulerSolver_->setEnabled(false);
 }
 
 void Harmonic_Oscillation::DiffEqSolverChanged()
@@ -129,6 +138,7 @@ void Harmonic_Oscillation::DiffEqSolverChanged()
     QObject* send = sender();
     if(send == exactSolver_) canvas_->setDiffEqSolver(solver::EXACT);
     else if(send == eulerSolver_) canvas_->setDiffEqSolver(solver::EULER);
+    else if(send == compareEulerSolver_) canvas_->setDiffEqSolver(solver::COMPARE_EULER);
 }
 void Harmonic_Oscillation::closeEvent(QCloseEvent*)
 {

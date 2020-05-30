@@ -13,9 +13,12 @@ class SimulationData : public QWidget
 public:
     SimulationData(const int row_size, const int column_size,QWidget *parent = nullptr);
     void setLabelText(const QString& str,const int row,const int column);
+    void pause();
+    void unpause();
 private:
     QVector<QVector<QLabel*>> labels_;
     QGridLayout* mainLayout_;
+    bool pause_;
 };
 }
 
